@@ -8,8 +8,19 @@ include 'contentvalues.php';
 		 public function __construct($host, $user, $password, $dbname)
 		 {
 		 	$this->connection = mysqli_connect($host, $user, $password, $dbname);
+		 	if($connection->connect_error)
+		 		die("Connection failed: ". $connection->connect_error);
 		 }
 		
+		 public function create_table($tablename, $schema)
+		 {
+		 	$query = "CREATE TABLE IF NOT EXISTS $tablename($schema)";
+		 	if($connection->query($query))
+		 		return TRUE;
+		 	else 
+		 		return FALSE;
+		 }
+		 
 		 public function insert($tablename, $contentvalues)
 		 {
 		 	$array = $contentvalues->get_contents;
@@ -29,8 +40,11 @@ include 'contentvalues.php';
 		 		$columns += $key;
 		 		$values += $array[$key];
 		 	}
-		 	$query = "INSERT INTO ".$tablename." (".$columns.") "."VALUES(".$values.")";
-		 	$connection->query($query);
+		 	$query = "INSERT INTO $tablename($columns) VALUES($values)";
+		 	if($connection->query($query))
+		 		return TRUE;
+		 	else 
+		 		return FALSE;
 		 }
 		 
 		 public function close()
