@@ -6,10 +6,13 @@
 	define ("TABLE_CATEGORY", "Category");
 	
 	$helper = new SqlHelper($config["db"]["host"], $config["db"]["username"], $config["db"]["password"], $config["db"]["dbname"]);
-	$helper->create_table(TABLE_CATEGORY, 
+	if($helper->create_table(TABLE_CATEGORY, 
 						 "id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-			 			  name NVARCHAR(50) NOT NULL");
-	$helper->create_table(TABLE_DISH, 
+			 			  name NVARCHAR(50) NOT NULL"))
+		echo "Table created successfully";
+	else 
+		echo "Error...";
+	if($helper->create_table(TABLE_DISH, 
 						"id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 						 name NVARCHAR(50) NOT NULL,
 						 ingredient NVARCHAR(1000),
@@ -17,6 +20,9 @@
 						 spicy BIT,
 						 vegie BIT,
 						 image varchar(100)
-						 category INT FOREIGN KEY REFERENCES ".TABLE_CATEGORY."(id)");
+						 category INT FOREIGN KEY REFERENCES ".TABLE_CATEGORY."(id)"))
+		echo "Table created successfully";
+	else
+		echo "Error...";
 	$helper->close();
 ?>

@@ -14,7 +14,7 @@ include 'contentvalues.php';
 		
 		 public function create_table($tablename, $schema)
 		 {
-		 	$query = "CREATE TABLE IF NOT EXISTS $tablename($schema)";
+		 	$query = "CREATE TABLE IF NOT EXISTS $tablename($schema) DESCRIBE $tablename";
 		 	if($connection->query($query))
 		 		return TRUE;
 		 	else 
@@ -23,7 +23,7 @@ include 'contentvalues.php';
 		 
 		 public function insert($tablename, $contentvalues)
 		 {
-		 	$array = $contentvalues->get_contents;
+		 	$array = $contentvalues->get_contents();
 		 	$keys = array_keys($array);
 		 	// create strings of array's keys and values
 		 	// $columns is a string of array's key
@@ -45,6 +45,24 @@ include 'contentvalues.php';
 		 		return TRUE;
 		 	else 
 		 		return FALSE;
+		 }
+		 
+		 public function update ($tablename, $wherecondition, $contentvalues)
+		 {
+		 	$array = $contentvalues->get_contents();
+		 	$array_keys = array_keys($array);
+		 	$whereclause = null;
+		 	foreach ($array_keys as $key)
+		 	{
+		 		if($whereclause!=null)
+		 			$whereclause += ",";
+		 		$whereclause = "$key=$array[$key]";
+		 	}
+		 	$query = "UPDATE $tablename WHERE $whereclause";
+		 	if($connection->query($query))
+		 		return TRUE;
+		 	else 
+		 		return FALSE;		 	
 		 }
 		 
 		 public function close()
