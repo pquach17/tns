@@ -7,18 +7,18 @@ include 'contentvalues.php';
 		 
 		 public function __construct($host, $user, $password, $dbname)
 		 {
-		 	$this->connection = mysqli_connect($host, $user, $password, $dbname);
-		 	if($connection->connect_error)
+		 	$this->connection = new mysqli($host, $user, $password, $dbname);
+		 	if($this->connection->connect_error)
 		 		die("Connection failed: ". $connection->connect_error);
 		 }
 		
 		 public function create_table($tablename, $schema)
 		 {
-		 	$query = "CREATE TABLE IF NOT EXISTS $tablename($schema) DESCRIBE $tablename";
-		 	if($connection->query($query))
+		 	$query = "CREATE TABLE IF NOT EXISTS $tablename($schema)";
+		 	if($this->connection->query($query))
 		 		return TRUE;
 		 	else 
-		 		return FALSE;
+		 		return $this->connection->error;
 		 }
 		 
 		 public function insert($tablename, $contentvalues)
@@ -44,7 +44,7 @@ include 'contentvalues.php';
 		 	if($connection->query($query))
 		 		return TRUE;
 		 	else 
-		 		return FALSE;
+		 		return $this->connection->error;
 		 }
 		 
 		 public function update ($tablename, $wherecondition, $contentvalues)
@@ -59,15 +59,15 @@ include 'contentvalues.php';
 		 		$whereclause = "$key=$array[$key]";
 		 	}
 		 	$query = "UPDATE $tablename WHERE $whereclause";
-		 	if($connection->query($query))
+		 	if($this->connection->query($query))
 		 		return TRUE;
 		 	else 
-		 		return FALSE;		 	
+		 		return $this->connection->error;		 	
 		 }
 		 
 		 public function close()
 		 {
-		 	$this->connection.close();
+		 	$this->connection->close();
 		 }
 	}
 ?>
